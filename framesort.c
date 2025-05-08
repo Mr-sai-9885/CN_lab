@@ -14,6 +14,7 @@ int main()
     scanf("%d",&n);
     for(i=0;i<n;i++)
     {
+        f[i].fno=rand() % 50;
         printf("enter the frame sequance %d : ",f[i].fno);
         scanf("%d",&f[i].finfo);
 
