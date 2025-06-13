@@ -3,13 +3,6 @@
 int data[20], gen[20], temp[20];
 int data_len, gen_len;
 
-// Function to perform XOR and left shift
-void xor_division() {
-    for (int i = 0; i < gen_len; i++) {
-        temp[i] = temp[i] ^ gen[i];
-    }
-}
-
 int main() {
     int i, j, choice;
 
