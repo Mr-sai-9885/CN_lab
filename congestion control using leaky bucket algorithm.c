@@ -1,60 +1,46 @@
+#include <stdio.h>      // This is a standard input/output header for printf and scanf
+#include <stdlib.h>     // This is used for the rand() function
 
-// Leaky Bucket Algorithm - Simple Version with Explanatory Comments
-#include <stdio.h>
-#include <stdlib.h> // for rand() and sleep()
-#include <unistd.h> // for sleep()
+int main()
+{
+    int or; // variable to store output rate (not used in logic here)
+    printf("Enter Output Rate : ");
+    scanf("%d", &or); // get output rate from user
 
-int main() {
-    int bucketSize, outputRate, packets[5], i;
-    int remaining = 0, incoming, waitTime;
+    int bs; // variable to store bucket size (capacity)
+    printf("Enter Bucket Size : ");
+    scanf("%d", &bs); // get bucket size from user
 
-    // Generate random packet sizes between 1 and 9
-    for (i = 0; i < 5; i++) {
-        packets[i] = rand() % 9 + 1;
-    }
+    int op; // variable to store number of operations (number of packets to simulate)
+    printf("Enter no of Operations : ");
+    scanf("%d", &op); // get number of operations
 
-    // Get output rate and bucket capacity from user
-    printf("Enter output rate: ");
-    scanf("%d", &outputRate);
+    // simulate each packet one by one
+    for (int i = 0; i < op; i++)
+    {
+        int n = rand() % 10; // randomly generate packet size between 0 to 9
 
-    printf("Enter bucket size: ");
-    scanf("%d", &bucketSize);
-
-    // Process each packet
-    for (i = 0; i < 5; i++) {
-        incoming = packets[i];
-
-        // Check if incoming packet plus remaining exceeds bucket size
-        if ((incoming + remaining) > bucketSize) {
-            printf("\nPacket %d size = %d dropped (Bucket overflow)\n", i + 1, incoming);
-            continue;
+        // check if packet size exceeds bucket capacity
+        if (n > bs)
+        {
+            printf("Incoming Packet size %d is greater than capacity %d\n", n, bs);
         }
+        else
+        {
+            // packet is accepted, show details
+            printf("----------------------------------------\n");
+            printf("Incoming Packet is : %d\n", n);
+            printf("Transmission left : %d\n", n); // since output logic not used, just show the full size as left
+            printf("----------------------------------------\n");
 
-        // Add packet to bucket
-        remaining += incoming;
-        printf("\nPacket %d size = %d added\n", i + 1, incoming);
-        printf("Current bucket load: %d\n", remaining);
+            int temp = rand() % 10; // simulate time in seconds until next packet
 
-        // Random wait time until next packet
-        waitTime = rand() % 5 + 1;
-        printf("Next packet arrives in %d seconds\n", waitTime);
+            printf("Next Packet will come at %d seconds\n", temp);
 
-        // Simulate output during wait time
-        while (waitTime-- && remaining > 0) {
-            sleep(1);
-            int toSend = (remaining > outputRate) ? outputRate : remaining;
-            remaining -= toSend;
-            printf("Sent %d bytes, Remaining = %d\n", toSend, remaining);
+            // bytes remaining after output (but here no output is reduced, so temp - temp = 0)
+            printf("Bytes Remaining : %d\n\n\n\n", temp - temp);
         }
     }
-
-    // Send any remaining data after all packets
-    while (remaining > 0) {
-        sleep(1);
-        int toSend = (remaining > outputRate) ? outputRate : remaining;
-        remaining -= toSend;
-        printf("Sent %d bytes, Remaining = %d\n", toSend, remaining);
-    }
-
+    // return 0 means program ended successfully
     return 0;
 }
