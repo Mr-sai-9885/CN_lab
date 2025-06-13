@@ -1,52 +1,38 @@
-// Simple Distance Vector Routing Algorithm
-#include<stdio.h>
-
-// Structure to store distance and source node
-struct node {
-    unsigned dist[10];   // Distance to other nodes
-    unsigned from[10];   // From which node this distance comes
-} rt[10];  // Routing table for each node
+#include <stdio.h>
 
 int main() {
-    int cost[10][10];   // Cost matrix
-    int n, i, j, k, count = 0;
+    int cost[10][10]; // Matrix to store the cost between nodes
+    int i, j, k, n;
 
-    // Input number of nodes
-    printf("Enter number of nodes: ");
-    scanf("%d", &n);
+    // Step 1: Input the number of nodes
+    printf("Enter matrix size: ");
+    scanf("%d", &n);  // Number of nodes in the network
 
-    // Input cost matrix
-    printf("Enter cost matrix (999 for no link):\n");
-    for(i = 0; i < n; i++) {
-        for(j = 0; j < n; j++) {
-            scanf("%d", &cost[i][j]);
-            rt[i].dist[j] = cost[i][j];  // Initialize distance
-            rt[i].from[j] = j;           // Initially each node assumes it can reach others directly
+    // Step 2: Input the cost matrix
+    printf("Enter matrix (cost between nodes):\n");
+    for (i = 0; i < n; i++) {
+        for (j = 0; j < n; j++) {
+            scanf("%d", &cost[i][j]);  // cost[i][j] = direct distance from node i to j
         }
     }
 
-    // Distance Vector Algorithm
-    do {
-        count = 0;
-        for(i = 0; i < n; i++) {
-            for(j = 0; j < n; j++) {
-                for(k = 0; k < n; k++) {
-                    // If going through k is better
-                    if(rt[i].dist[j] > cost[i][k] + rt[k].dist[j]) {
-                        rt[i].dist[j] = cost[i][k] + rt[k].dist[j];
-                        rt[i].from[j] = k; // Update via node
-                        count++;
-                    }
+    // Step 3: Apply Distance Vector logic
+    for (i = 0; i < n; i++) {          // Source node
+        for (j = 0; j < n; j++) {      // Destination node
+            for (k = 0; k < n; k++) {  // Intermediate node
+                // If going through node k is cheaper, update cost[i][j]
+                if (cost[i][j] > cost[i][k] + cost[k][j]) {
+                    cost[i][j] = cost[i][k] + cost[k][j];
                 }
             }
         }
-    } while(count != 0);  // Repeat until no changes
+    }
 
-    // Print final routing table
-    for(i = 0; i < n; i++) {
-        printf("\nRouting table for Router %d:\n", i + 1);
-        for(j = 0; j < n; j++) {
-            printf("Node %d via %d Distance %d\n", j + 1, rt[i].from[j] + 1, rt[i].dist[j]);
+    // Step 4: Print the shortest path costs
+    printf("\nFinal Distance Table:\n");
+    for (i = 0; i < n; i++) {
+        for (j = 0; j < n; j++) {
+            printf("Node %d to %d via shortest path = %d\n", i + 1, j + 1, cost[i][j]);
         }
     }
 
